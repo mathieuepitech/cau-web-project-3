@@ -3,25 +3,27 @@
 namespace CAUProject3Contact\Controller\Site;
 
 use CAUProject3Contact\Controller\ControllerSite;
+use CAUProject3Contact\Model\Contact;
 
 class Index extends ControllerSite {
 
-	/**
-	 * Index constructor.
-	 */
-	public function __construct() {
-		parent::__construct();
+    /**
+     * Index constructor.
+     */
+    public function __construct() {
+        parent::__construct();
 
-		$this->addHead( [
-		] );
+        $this->addHead( [] );
 
-		$this->addFooter( [
+        $this->addFooter( [] );
 
-		] );
+        $contacts = Contact::getAllContact();
 
-		$this->addData( [] );
-		$this->view();
-	}
+        $this->addData( [
+            "contacts" => $contacts
+        ] );
+        $this->view();
+    }
 }
 
 ?>

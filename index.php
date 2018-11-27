@@ -35,7 +35,7 @@ if ( count( $pages ) > 1 && $pages[ count( $pages ) - 1 ] == '' ) {
 if ( $pages[0] == 'api' && isset( $pages[1] ) && preg_match( '#^([a-z]+)$#', $pages[1], $api1 ) && isset( $pages[2] ) && preg_match( '#^([a-z-]+)$#', $pages[2], $api2 ) ) {
 	new APIRouter( $api1[0], $api2[0] );
 
-} else if ( preg_match( '#^test\.dev$#', $_SERVER['SERVER_NAME'] ) ) {
+} else if ( preg_match( '#^contact.sanchez-mathieu\.test$#', $_SERVER[ 'SERVER_NAME' ] ) || preg_match( '#^contact.sanchez-mathieu\.fr#', $_SERVER[ 'SERVER_NAME' ] ) ) {
 	new SiteRouter( $pages );
 } else {
 	new Error( 404 );

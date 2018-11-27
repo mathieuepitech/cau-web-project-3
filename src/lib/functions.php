@@ -12,36 +12,36 @@ include( 'src/lib/mail/PHPMailerAutoload.php' );
  */
 function formatURL( string $str, $encoding = 'utf-8' ) {
 
-	$str = str_replace( "+", "_plus_", $str );
-	$str = str_replace( "%", "_pourcent_", $str );
-	$str = str_replace( "&", "_et_", $str );
+    $str = str_replace( "+", "_plus_", $str );
+    $str = str_replace( "%", "_pourcent_", $str );
+    $str = str_replace( "&", "_et_", $str );
 
-	//on remplace les apotrophes et espaces par des underscore
-	$str = str_replace( array( "'", " ", "," ), "_", $str );
+    //on remplace les apotrophes et espaces par des underscore
+    $str = str_replace( array( "'", " ", "," ), "_", $str );
 
-	$str = str_replace( "__", "_", $str );
+    $str = str_replace( "__", "_", $str );
 
-	// transformer les caractères accentués en entités HTML
-	$str = htmlentities( $str, ENT_NOQUOTES, $encoding );
-	// remplacer les entités HTML pour avoir juste le premier caractères non accentués
-	// Exemple : "&ecute;" => "e", "&Ecute;" => "E", "Ã " => "a" ...
-	$str = preg_replace( '#&([A-za-z])(?:acute|grave|cedil|circ|orn|ring|slash|th|tilde|uml);#', '\1', $str );
+    // transformer les caractères accentués en entités HTML
+    $str = htmlentities( $str, ENT_NOQUOTES, $encoding );
+    // remplacer les entités HTML pour avoir juste le premier caractères non accentués
+    // Exemple : "&ecute;" => "e", "&Ecute;" => "E", "Ã " => "a" ...
+    $str = preg_replace( '#&([A-za-z])(?:acute|grave|cedil|circ|orn|ring|slash|th|tilde|uml);#', '\1', $str );
 
-	// Remplacer les ligatures tel que : Œ, Æ ...
-	// Exemple "Å“" => "oe"
-	$str = preg_replace( '#&([A-za-z]{2})(?:lig);#', '\1', $str );
-	// Supprimer tout le reste
-	//$str = preg_replace('#&[^;]+;#', '', $str);
-	$str = str_replace( array( "#", "&", "[", "^", ";", "]" ), '', $str );
+    // Remplacer les ligatures tel que : Œ, Æ ...
+    // Exemple "Å“" => "oe"
+    $str = preg_replace( '#&([A-za-z]{2})(?:lig);#', '\1', $str );
+    // Supprimer tout le reste
+    //$str = preg_replace('#&[^;]+;#', '', $str);
+    $str = str_replace( array( "#", "&", "[", "^", ";", "]" ), '', $str );
 
-	//on passe tout en minuscule
-	$str = strtolower( $str );
+    //on passe tout en minuscule
+    $str = strtolower( $str );
 
-	if ( substr( $str, - 1 ) == '_' ) {
-		$str = substr( $str, 0, - 1 );
-	}
+    if ( substr( $str, -1 ) == '_' ) {
+        $str = substr( $str, 0, -1 );
+    }
 
-	return $str;
+    return $str;
 }
 
 /**
@@ -57,55 +57,55 @@ function formatURL( string $str, $encoding = 'utf-8' ) {
  */
 function darkroom( $img, $to, $width = 0, $height = 0, $quality = 100, $useGD = true ) {
 
-	$dimensions = getimagesize( $img );
-	$ratio      = $dimensions[0] / $dimensions[1];
+    $dimensions = getimagesize( $img );
+    $ratio = $dimensions[ 0 ] / $dimensions[ 1 ];
 
-	// Calcul des dimensions si 0 passé en paramètre
-	if ( $width == 0 && $height == 0 ) {
-		$width  = $dimensions[0];
-		$height = $dimensions[1];
-	} else if ( $height == 0 ) {
-		$height = round( $width / $ratio );
-	} else if ( $width == 0 ) {
-		$width = round( $height * $ratio );
-	}
+    // Calcul des dimensions si 0 passé en paramètre
+    if ( $width == 0 && $height == 0 ) {
+        $width = $dimensions[ 0 ];
+        $height = $dimensions[ 1 ];
+    } else if ( $height == 0 ) {
+        $height = round( $width / $ratio );
+    } else if ( $width == 0 ) {
+        $width = round( $height * $ratio );
+    }
 
-	if ( $dimensions[0] > ( $width / $height ) * $dimensions[1] ) {
-		$dimY = $height;
-		$dimX = round( $height * $dimensions[0] / $dimensions[1] );
-	}
-	if ( $dimensions[0] < ( $width / $height ) * $dimensions[1] ) {
-		$dimX = $width;
-		$dimY = round( $width * $dimensions[1] / $dimensions[0] );
-	}
-	if ( $dimensions[0] == ( $width / $height ) * $dimensions[1] ) {
-		$dimX = $width;
-		$dimY = $height;
-	}
+    if ( $dimensions[ 0 ] > ( $width / $height ) * $dimensions[ 1 ] ) {
+        $dimY = $height;
+        $dimX = round( $height * $dimensions[ 0 ] / $dimensions[ 1 ] );
+    }
+    if ( $dimensions[ 0 ] < ( $width / $height ) * $dimensions[ 1 ] ) {
+        $dimX = $width;
+        $dimY = round( $width * $dimensions[ 1 ] / $dimensions[ 0 ] );
+    }
+    if ( $dimensions[ 0 ] == ( $width / $height ) * $dimensions[ 1 ] ) {
+        $dimX = $width;
+        $dimY = $height;
+    }
 
-	// Création de l'image avec la librairie GD
-	if ( $useGD ) {
-		$pattern = imagecreatetruecolor( $width, $height );
-		$type    = mime_content_type( $img );
-		switch ( substr( $type, 6 ) ) {
-			case 'jpeg':
-				$image = imagecreatefromjpeg( $img );
-				break;
-			case 'gif':
-				$image = imagecreatefromgif( $img );
-				break;
-			case 'png':
-				$image = imagecreatefrompng( $img );
-				break;
-		}
-		imagecopyresampled( $pattern, $image, 0, 0, 0, 0, $dimX, $dimY, $dimensions[0], $dimensions[1] );
-		imagedestroy( $image );
-		imagejpeg( $pattern, $to, $quality );
+    // Création de l'image avec la librairie GD
+    if ( $useGD ) {
+        $pattern = imagecreatetruecolor( $width, $height );
+        $type = mime_content_type( $img );
+        switch ( substr( $type, 6 ) ) {
+            case 'jpeg':
+                $image = imagecreatefromjpeg( $img );
+                break;
+            case 'gif':
+                $image = imagecreatefromgif( $img );
+                break;
+            case 'png':
+                $image = imagecreatefrompng( $img );
+                break;
+        }
+        imagecopyresampled( $pattern, $image, 0, 0, 0, 0, $dimX, $dimY, $dimensions[ 0 ], $dimensions[ 1 ] );
+        imagedestroy( $image );
+        imagejpeg( $pattern, $to, $quality );
 
-		return true;
-	}
+        return true;
+    }
 
-	return true;
+    return true;
 }
 
 /**
@@ -119,20 +119,20 @@ function darkroom( $img, $to, $width = 0, $height = 0, $quality = 100, $useGD = 
  * @return bool|void
  */
 function errorHandler( $errno, $errstr, $errfile, $errline ) {
-	if ( ! ( error_reporting() & $errno ) ) {
-		// Ce code d'erreur n'est pas inclus dans error_reporting()
-		return;
-	}
+    if ( !( error_reporting() & $errno ) ) {
+        // Ce code d'erreur n'est pas inclus dans error_reporting()
+        return;
+    }
 
-	// Insertion des logs
-	\CAUProject3Contact\Model\Logs::insert( $errno, $errstr, $errfile, $errline, date( 'Y-m-d H:i:s' ) );
+    // Insertion des logs
+    \CAUProject3Contact\Model\Logs::insert( $errno, $errstr, $errfile, $errline, date( 'Y-m-d H:i:s' ) );
 
-	ob_clean();
-	new \CAUProject3Contact\Controller\Site\SiteError( 500 );
+    ob_clean();
+    new \CAUProject3Contact\Controller\Site\SiteError( 500 );
 
-	/* Ne pas exécuter le gestionnaire interne de PHP */
+    /* Ne pas exécuter le gestionnaire interne de PHP */
 
-	return;
+    return;
 }
 
 /**
@@ -141,87 +141,87 @@ function errorHandler( $errno, $errstr, $errfile, $errline ) {
  */
 function getBrowser() {
 
-	$u_agent  = $_SERVER['HTTP_USER_AGENT'];
-	$bname    = 'Unknown';
-	$platform = 'Unknown';
-	$ub       = "";
+    $u_agent = $_SERVER[ 'HTTP_USER_AGENT' ];
+    $bname = 'Unknown';
+    $platform = 'Unknown';
+    $ub = "";
 
-	//First get the platform?
-	if ( preg_match( '/android/i', $u_agent ) || preg_match( '/Android/i', $u_agent ) ) {
-		$platform = 'android';
-	} else if ( preg_match( '/linux/i', $u_agent ) ) {
-		$platform = 'linux';
-	} else if ( preg_match( '/macintosh|mac os x/i', $u_agent ) ) {
-		$platform = 'mac';
-	} else if ( preg_match( '/windows|win32/i', $u_agent ) ) {
-		$platform = 'windows';
-	}
+    //First get the platform?
+    if ( preg_match( '/android/i', $u_agent ) || preg_match( '/Android/i', $u_agent ) ) {
+        $platform = 'android';
+    } else if ( preg_match( '/linux/i', $u_agent ) ) {
+        $platform = 'linux';
+    } else if ( preg_match( '/macintosh|mac os x/i', $u_agent ) ) {
+        $platform = 'mac';
+    } else if ( preg_match( '/windows|win32/i', $u_agent ) ) {
+        $platform = 'windows';
+    }
 
-	if ( strstr( $u_agent, 'mobile' ) || strstr( $u_agent, 'Mobile' ) ) {
-		$platform .= ' mobile';
-	}
+    if ( strstr( $u_agent, 'mobile' ) || strstr( $u_agent, 'Mobile' ) ) {
+        $platform .= ' mobile';
+    }
 
-	// Next get the name of the useragent yes seperately and for good reason
-	if ( preg_match( '/MSIE/i', $u_agent ) && ! preg_match( '/Opera/i', $u_agent ) ) {
-		$bname = 'Internet Explorer';
-		$ub    = "MSIE";
-	} else if ( preg_match( '/Edge/i', $u_agent ) ) {
-		$bname = 'Microsoft Edge';
-		$ub    = "Edge";
-	} else if ( preg_match( '/Trident/i', $u_agent ) ) {
-		$bname = 'Internet Explorer';
-		$ub    = "rv";
-	} else if ( preg_match( '/Firefox/i', $u_agent ) ) {
-		$bname = 'Mozilla Firefox';
-		$ub    = "Firefox";
-	} else if ( preg_match( '/Chrome/i', $u_agent ) ) {
-		$bname = 'Google Chrome';
-		$ub    = "Chrome";
-	} else if ( preg_match( '/Safari/i', $u_agent ) ) {
-		$bname = 'Apple Safari';
-		$ub    = "Safari";
-	} else if ( preg_match( '/Opera/i', $u_agent ) ) {
-		$bname = 'Opera';
-		$ub    = "Opera";
-	} else if ( preg_match( '/Netscape/i', $u_agent ) ) {
-		$bname = 'Netscape';
-		$ub    = "Netscape";
-	}
+    // Next get the name of the useragent yes seperately and for good reason
+    if ( preg_match( '/MSIE/i', $u_agent ) && !preg_match( '/Opera/i', $u_agent ) ) {
+        $bname = 'Internet Explorer';
+        $ub = "MSIE";
+    } else if ( preg_match( '/Edge/i', $u_agent ) ) {
+        $bname = 'Microsoft Edge';
+        $ub = "Edge";
+    } else if ( preg_match( '/Trident/i', $u_agent ) ) {
+        $bname = 'Internet Explorer';
+        $ub = "rv";
+    } else if ( preg_match( '/Firefox/i', $u_agent ) ) {
+        $bname = 'Mozilla Firefox';
+        $ub = "Firefox";
+    } else if ( preg_match( '/Chrome/i', $u_agent ) ) {
+        $bname = 'Google Chrome';
+        $ub = "Chrome";
+    } else if ( preg_match( '/Safari/i', $u_agent ) ) {
+        $bname = 'Apple Safari';
+        $ub = "Safari";
+    } else if ( preg_match( '/Opera/i', $u_agent ) ) {
+        $bname = 'Opera';
+        $ub = "Opera";
+    } else if ( preg_match( '/Netscape/i', $u_agent ) ) {
+        $bname = 'Netscape';
+        $ub = "Netscape";
+    }
 
-	// finally get the correct version number
-	// Added "|:"
-	$known   = array( 'Version', $ub, 'other' );
-	$pattern = '#(?<browser>' . join( '|', $known ) . ')[/|: ]+(?<version>[0-9.|a-zA-Z.]*)#';
-	if ( ! preg_match_all( $pattern, $u_agent, $matches ) ) {
-		// we have no matching number just continue
-	}
+    // finally get the correct version number
+    // Added "|:"
+    $known = array( 'Version', $ub, 'other' );
+    $pattern = '#(?<browser>' . join( '|', $known ) . ')[/|: ]+(?<version>[0-9.|a-zA-Z.]*)#';
+    if ( !preg_match_all( $pattern, $u_agent, $matches ) ) {
+        // we have no matching number just continue
+    }
 
-	// see how many we have
-	$i = count( $matches['browser'] );
-	if ( $i != 1 ) {
-		//we will have two since we are not using 'other' argument yet
-		//see if version is before or after the name
-		if ( strripos( $u_agent, "Version" ) < strripos( $u_agent, $ub ) ) {
-			$version = $matches['version'][0];
-		} else {
-			$version = $matches['version'][1];
-		}
-	} else {
-		$version = $matches['version'][0];
-	}
+    // see how many we have
+    $i = count( $matches[ 'browser' ] );
+    if ( $i != 1 ) {
+        //we will have two since we are not using 'other' argument yet
+        //see if version is before or after the name
+        if ( strripos( $u_agent, "Version" ) < strripos( $u_agent, $ub ) ) {
+            $version = $matches[ 'version' ][ 0 ];
+        } else {
+            $version = $matches[ 'version' ][ 1 ];
+        }
+    } else {
+        $version = $matches[ 'version' ][ 0 ];
+    }
 
-	// check if we have a number
-	if ( $version == null || $version == "" ) {
-		$version = "?";
-	}
+    // check if we have a number
+    if ( $version == null || $version == "" ) {
+        $version = "?";
+    }
 
-	return array(
-		'userAgent' => $u_agent,
-		'platform'  => $platform,
-		'version'   => $version,
-		'pattern'   => $pattern,
-		'name'      => $bname
-	);
+    return array(
+        'userAgent' => $u_agent,
+        'platform' => $platform,
+        'version' => $version,
+        'pattern' => $pattern,
+        'name' => $bname
+    );
 }
 
 /**
@@ -231,15 +231,15 @@ function getBrowser() {
  * @return int
  */
 function getLimitWord( $string, $limit ) {
-	$i = $limit;
-	if ( ! isset( $string ) || empty( $string ) ) {
-		return 0;
-	}
-	while ( $i > 0 && $string[ $i ] != ' ' ) {
-		$i --;
-	}
+    $i = $limit;
+    if ( !isset( $string ) || empty( $string ) ) {
+        return 0;
+    }
+    while ( $i > 0 && $string[ $i ] != ' ' ) {
+        $i--;
+    }
 
-	return $i;
+    return $i;
 }
 
 /**
@@ -329,38 +329,38 @@ function email(array $destinataires, string $subject, string $body, string $aute
  * @return bool
  */
 function rotateImage( string $file, int $angle, string $newName ) {
-	// Initialisation variable pou test futur
-	$image = null;
-	$type  = mime_content_type( $file );
-	// Création ressources en fonction de l'image
-	switch ( substr( $type, 6 ) ) {
-		case 'jpeg':
-			$image = imagecreatefromjpeg( $file );
-			break;
-		case 'png':
-			$image = imagecreatefrompng( $file );
-			break;
-	}
-	// Si format image non prit en charge
-	if ( $image == null ) {
-		return false;
-	}
-	// Rotation de l'image
-	$rotate = imagerotate( $image, $angle, 0 );
-	// On recrée l'image au format de base
-	switch ( substr( $type, 6 ) ) {
-		case 'jpeg':
-			imagejpeg( $rotate, $file );
-			break;
-		case 'png':
-			imagepng( $rotate, $file );
-			break;
-	}
-	imagedestroy( $image );
-	imagedestroy( $rotate );
-	rename( $file, $newName );
+    // Initialisation variable pou test futur
+    $image = null;
+    $type = mime_content_type( $file );
+    // Création ressources en fonction de l'image
+    switch ( substr( $type, 6 ) ) {
+        case 'jpeg':
+            $image = imagecreatefromjpeg( $file );
+            break;
+        case 'png':
+            $image = imagecreatefrompng( $file );
+            break;
+    }
+    // Si format image non prit en charge
+    if ( $image == null ) {
+        return false;
+    }
+    // Rotation de l'image
+    $rotate = imagerotate( $image, $angle, 0 );
+    // On recrée l'image au format de base
+    switch ( substr( $type, 6 ) ) {
+        case 'jpeg':
+            imagejpeg( $rotate, $file );
+            break;
+        case 'png':
+            imagepng( $rotate, $file );
+            break;
+    }
+    imagedestroy( $image );
+    imagedestroy( $rotate );
+    rename( $file, $newName );
 
-	return true;
+    return true;
 }
 
 /**
@@ -369,34 +369,38 @@ function rotateImage( string $file, int $angle, string $newName ) {
  * @return array
  * Clean toutes les strings dans array en récursif, et filtre pour n'avoir qu'un espaces entre chaque mot
  */
-function cleanArray( array $data ) {
-	if ( ! empty( $data ) ) {
-		foreach ( $data as $key => $donnée ) {
-			switch ( gettype( $donnée ) ) {
-				case 'string':
-					if ( ! empty( $donnée ) ) {
-						$new_string = '';
-						foreach ( explode( ' ', trim( $donnée ) ) as $str ) {
-							if ( ! empty( $str ) ) {
-								if ( $new_string != '' ) {
-									$new_string .= ' ';
-								}
-								$new_string .= $str;
-							}
-						}
-						$data[ $key ] = $new_string;
-					}
-					break;
-				case 'array':
-					if ( ! empty( $donnée ) ) {
-						$data[ $key ] = cleanArray( $donnée );
-					}
-					break;
-			}
-		}
-	}
+function cleanArray( array $data ): array {
+    if ( !empty( $data ) ) {
+        foreach ( $data as $key => $value ) {
+            switch ( gettype( $value ) ) {
+                case 'string':
+                    if ( !empty( $str ) ) {
+                        $data[ $key ] = cleanString( $value );
+                    }
+                    break;
+                case 'array':
+                    if ( !empty( $value ) ) {
+                        $data[ $key ] = cleanArray( $value );
+                    }
+                    break;
+            }
+        }
+    }
 
-	return $data;
+    return $data;
+}
+
+function cleanString( string $str ): string {
+    $newStr = '';
+    foreach ( explode( ' ', trim( $str ) ) as $word ) {
+        if ( !empty( $word ) && $word != '' ) {
+            if ( $newStr != '' ) {
+                $newStr .= ' ';
+            }
+            $newStr .= $word;
+        }
+    }
+    return $newStr;
 }
 
 /**
@@ -405,9 +409,27 @@ function cleanArray( array $data ) {
  * @return mixed
  */
 function endKey( $array ) {
-	end( $array );
+    end( $array );
 
-	return key( $array );
+    return key( $array );
+}
+
+function filterArrays( $array1, $array2 ): array {
+    $newArray = [];
+
+    foreach ( $array2 as $item2 ) {
+        $add = true;
+        foreach ( $array1 as $item1 ) {
+            if ( $item2[ "id" ] == $item1[ "id" ] ) {
+                $add = false;
+            }
+        }
+        if ( $add ) {
+            $newArray[] = $item2;
+        }
+    }
+
+    return $newArray;
 }
 
 ?>

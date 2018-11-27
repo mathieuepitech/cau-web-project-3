@@ -35,3 +35,21 @@ img.add-contacts {
 #search:focus {
     width: 500px;
 }
+
+.md-footer {
+    height: 70px;
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    text-align: right;
+}
+
+.mandatory {
+    font-size: 10px;
+}
+
+nav ul a.nav-search:hover {
+    background-color: initial;
+}
+
+.delete, .modify {
+    cursor: pointer;
+}

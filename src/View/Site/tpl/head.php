@@ -24,6 +24,8 @@
           content="https://<?= $_SERVER[ 'SERVER_NAME' ] . \CAUProject3Contact\Config::FAVICON_PATH ?>"/>
     <!--    <meta property="fb:app_id"              content="1000452166691027" /> -->
 
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700%7CRoboto+Condensed:400,700%7CMaterial+Icons'
           rel='stylesheet' type='text/css'>
 
@@ -31,6 +33,10 @@
     <link rel="icon" type="image/ico" href="<?= CAUProject3Contact\Config::FAVICON_PATH ?>"/>
 
     <meta name="theme-color" content="#ffffff">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/modal.css">
 
     <?php if ( isset( $this->head[ 'robotNoIndex' ] ) && $this->head[ 'robotNoIndex' ] == true ) { ?>
         <meta name="robots" content="noindex"/>

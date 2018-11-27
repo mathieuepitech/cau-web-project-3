@@ -3,8 +3,8 @@
 namespace CAUProject3Contact;
 
 class Config {
-    const SITE_JS_VERSION = '0.01';
-    const SITE_CSS_VERSION = '0.01';
+    const SITE_JS_VERSION = '0.02';
+    const SITE_CSS_VERSION = '0.02';
 
     const TITLE_HEADER = 'Your contact';
     const DESCRIPTION_HEADER = 'Manage your contact easly';

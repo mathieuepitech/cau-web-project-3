@@ -8,16 +8,16 @@ use PDO;
 class BDD {
 
     // Server BDD
-//    const SQL_SERVER = 'sql.sanchez-mathieu.fr';    // BDD Server
-//    const SQL_LOGIN = 'why7n0_contact';             // BDD Login
-//    const SQL_PASSWORD = 'fC3c87Gy';                // BDD Password
-//    const SQL_DB = 'why7n0_contact';                // BDD Name
+    const SQL_SERVER = 'sql.sanchez-mathieu.fr';    // BDD Server
+    const SQL_LOGIN = 'why7n0_contact';             // BDD Login
+    const SQL_PASSWORD = 'fC3c87Gy';                // BDD Password
+    const SQL_DB = 'why7n0_contact';                // BDD Name
 
     // Local BDD
-    const SQL_SERVER = 'localhost';     // BDD Server
-    const SQL_LOGIN = 'root';           // BDD Login
-    const SQL_PASSWORD = '';            // BDD Password
-    const SQL_DB = 'contact';           // BDD Name
+//    const SQL_SERVER = 'localhost';     // BDD Server
+//    const SQL_LOGIN = 'root';           // BDD Login
+//    const SQL_PASSWORD = '';            // BDD Password
+//    const SQL_DB = 'contact';           // BDD Name
 
     private static $bdd;
 

@@ -172,7 +172,7 @@ class APIContact extends API {
     }
 
     public function search( array $data ) {
-        if ( count_chars( $data[ "query" ] ) >= 3 ) {
+        if ( count_chars( $data[ "query" ] ) >= 2 ) {
             $result = Contact::search( $data[ "query" ] );
             if ( $result !== null ) {
                 $this->returnJson( [

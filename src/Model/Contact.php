@@ -93,7 +93,7 @@ class Contact {
         $lastKey = endKey( $words );
         foreach ( $words as $key => $word ) {
             $normal = self::getQuerySearch( $word, [ "first_name", "last_name", "surname" ] );;
-            $hard = self::getQuerySearch( $word, [ "email", "address", "phone_number" ] );
+            $hard = self::getQuerySearch( $word, [ "email", "address", "phone_number", "birthday" ] );
             $q1 .= $normal;
             $q2 .= $normal;
             $q3 .= $hard;

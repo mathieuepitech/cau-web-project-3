@@ -4,7 +4,7 @@
 <div id="modal" class="md-modal">
     <div class="md-content">
 
-        <h3 class="md-header">Add contact</h3>
+        <h3 class="md-header md-title">Add contact</h3>
 
         <div class="md-container row">
             <form class="col s12">

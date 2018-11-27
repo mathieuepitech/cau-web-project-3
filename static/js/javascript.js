@@ -23,9 +23,6 @@ let displayContacts = (contacts) => {
 
 $(document).ready(() => {
 
-    let modal = $('.modal');
-
-    modal.modal();
 
     let search = (query) => {
         if (query.length >= 2) {
@@ -81,7 +78,43 @@ $(document).ready(() => {
     });
 
     $(document).on("click", ".add-contacts", () => {
-        $("#modal").addClass("md-show");
+        let modal = $("#modal");
+
+        modal.find("input").each((i, e) => {
+            let $e = $(e);
+
+            $e.val("");
+            $e.removeClass("valid");
+            $e.removeClass("invalid");
+            $e.parent().find("label").removeClass("active");
+        });
+
+        modal.find(".md-title").text("Add Contact");
+        modal.removeAttr("data-id");
+        modal.addClass("md-show");
+    });
+
+    $(document).on("click", ".modify", function () {
+        let modal = $("#modal");
+        let $contact = $(this).closest("tr");
+        let id = parseInt($contact.attr("data-id"), 10);
+        let inputs = modal.find("input");
+        let td = $contact.find("td");
+
+        modal.find(".md-title").text("Modify Contact");
+        modal.attr("data-id", id);
+        modal.addClass("md-show");
+
+        for (let i = 0; i < 7; i++) {
+            let input = $(inputs[i]);
+            let value = $(td[i]).text();
+
+            input.val(value);
+            if (value !== "") {
+                input.addClass("valid");
+                input.parent().find("label").addClass("active");
+            }
+        }
     });
 
     $(document).on("click", "#md-cancel", () => {
@@ -89,6 +122,7 @@ $(document).ready(() => {
     });
 
     $(document).on("click", "#md-validate", () => {
+        let modal = $("#modal");
         let firstName = $("#first_name").val();
         let lastName = $("#last_name").val();
         let surname = $("#surname").val();
@@ -96,6 +130,10 @@ $(document).ready(() => {
         let address = $("#address").val();
         let phoneNumber = $("#phone_number").val();
         let birthday = $("#birthday").val();
+
+        let id = modal.attr("data-id");
+
+        console.log(modal, id);
 
         if (firstName !== "" && lastName !== "") {
             let data = {
@@ -108,21 +146,44 @@ $(document).ready(() => {
                 birthday: (birthday !== "" ? birthday : null),
             };
 
-            $.ajax({
-                url: "/api/contact/insert",
-                method: "POST",
-                data,
-                success: function (result) {
-                    result = JSON.parse(result);
-                    data["id"] = parseInt(result.data["id"], 10);
-                    contacts.push(data);
+            if (id && parseInt(id, 10) > 0) {
+                id = parseInt(id, 10);
+                data["id"] = id;
+                $.ajax({
+                    url: "/api/contact/update",
+                    method: "POST",
+                    data,
+                    success: function (result) {
+                        result = JSON.parse(result);
 
-                    $("table tbody").empty();
-                    displayContacts(contacts);
-                    $("#modal").removeClass("md-show");
-                }, error: function () {
-                }
-            });
+                        for (let i = 0; i < contacts.length; i++) {
+                            if (contacts[i].id === id) {
+                                contacts[i] = result;
+                            }
+                        }
+
+                        $("table tbody").empty();
+                        displayContacts(contacts);
+                        $("#modal").removeClass("md-show");
+                    }
+                })
+            } else {
+                $.ajax({
+                    url: "/api/contact/insert",
+                    method: "POST",
+                    data,
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        data["id"] = parseInt(result.data["id"], 10);
+                        contacts.push(data);
+
+                        $("table tbody").empty();
+                        displayContacts(contacts);
+                        $("#modal").removeClass("md-show");
+                    }, error: function () {
+                    }
+                });
+            }
         }
     });
 
@@ -142,5 +203,18 @@ $(document).ready(() => {
             }
         })
     });
+
+    setInterval(() => {
+        $.ajax({
+            url: "/api/contact/get-contacts",
+            method: "GET",
+            success: function (data) {
+                contacts = JSON.parse(data).contacts;
+
+                $("table tbody").empty();
+                displayContacts(contacts);
+            }
+        })
+    }, 10000);
 
 });

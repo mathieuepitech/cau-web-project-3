@@ -42,6 +42,21 @@
         <meta name="robots" content="noindex"/>
     <?php } ?>
 
+    <meta name="google-site-verification" content="Wj7q88uqcL-YBazin9bAcN5BD8_tlu4N4Aqm8NCHFxc"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74712385-8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-74712385-8');
+    </script>
+
 </head>
 
 <body>

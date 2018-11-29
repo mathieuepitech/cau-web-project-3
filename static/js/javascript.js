@@ -211,8 +211,8 @@ $(document).ready(() => {
             success: function (data) {
                 contacts = JSON.parse(data).contacts;
 
-                $("table tbody").empty();
                 if ($("#search").val().length <= 0) {
+                    $("table tbody").empty();
                     displayContacts(contacts);
                 }
             }

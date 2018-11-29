@@ -212,7 +212,9 @@ $(document).ready(() => {
                 contacts = JSON.parse(data).contacts;
 
                 $("table tbody").empty();
-                displayContacts(contacts);
+                if ($("#search").val().length <= 0) {
+                    displayContacts(contacts);
+                }
             }
         })
     }, 10000);
